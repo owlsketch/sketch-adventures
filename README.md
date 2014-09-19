@@ -1,4 +1,4 @@
-playground
+Testing playground
 ==========
 
-unofficial testing playground for easelJS
+Unofficial testing playground for graphic libraries. 
