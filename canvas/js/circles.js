@@ -17,47 +17,74 @@ var canvas = document.getElementsByTagName('canvas')[k];
 
 	function drawBorder(canv)
 	{
-		context.beginPath();
 		switch(canv) {
 		 case 0:
-			context.moveTo(0, 250);
-			context.lineTo(250, 250);
-			context.stroke();
-			context.lineTo(250, 0);
-			context.stroke();
-			context.moveTo(250, 250);
-			context.lineTo(0, 0);
-			context.stroke();
+		 	var xpos = new Array(0, 250, 0, 50, 100, 150, 0, 0, 0);
+			var ypos = new Array(250, 0, 0, 0 , 0, 0, 50, 100, 150);
+			var xorigin = new Array(240, 230, 220, 250, 250, 250);
+			var yorigin = new Array(250,250,250, 240,230,220);
+		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+			{
+				context.beginPath();
+				if(linedrawn < 3)
+					context.moveTo(250,250); //always start at origin point
+				else
+					context.moveTo(xorigin[linedrawn - 3], yorigin[linedrawn-3]);
+				context.lineTo(xpos[linedrawn], ypos[linedrawn]);
+				context.stroke();
+				context.closePath();
+			}	
 			break;
 		 case 1:
-			context.moveTo(250, 250);
-			context.lineTo(0, 250);
-			context.stroke();
-			context.lineTo(0,0);
-			context.stroke();
-			context.moveTo(0, 250);
-			context.lineTo(250, 0);
-			context.stroke();
+		 	var xpos = new Array(0, 250, 250, 200, 150, 100, 250, 250, 250);
+			var ypos = new Array(0, 0, 250, 0 , 0, 0, 50, 100, 150);
+			var xorigin = new Array(10, 20, 30, 0, 0, 0);
+			var yorigin = new Array(250,250,250, 240,230,220);
+		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+			{
+				context.beginPath();
+				if(linedrawn < 3)
+					context.moveTo(0,250); //always start at origin point
+				else
+					context.moveTo(xorigin[linedrawn - 3], yorigin[linedrawn-3]);
+				context.lineTo(xpos[linedrawn], ypos[linedrawn]);
+				context.stroke();
+				context.closePath();
+			}	
 			break; 
 		 case 2:
-			context.moveTo(0, 0);
-			context.lineTo(250, 0);
-			context.stroke();
-			context.lineTo(250, 250);
-			context.stroke();
-			context.moveTo(250,0);
-			context.lineTo(0, 250);
-			context.stroke();
+		 	var xpos = new Array(0, 250, 0, 50, 100, 150, 0, 0, 0);
+			var ypos = new Array(0, 250, 250, 250 ,250, 250, 200, 150, 100);
+			var xorigin = new Array(240, 230, 220, 250,250,250);
+			var yorigin = new Array(0,0,0, 10,20,30);
+		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+			{
+				context.beginPath();
+				if(linedrawn < 3)
+					context.moveTo(250,0); //always start at origin point
+				else
+					context.moveTo(xorigin[linedrawn - 3], yorigin[linedrawn-3]);
+				context.lineTo(xpos[linedrawn], ypos[linedrawn]);
+				context.stroke();
+				context.closePath();
+			}	
 			break;
 		 case 3:
-			context.moveTo(250, 0);
-			context.lineTo(0, 0);
-			context.stroke();
-			context.lineTo(0,250);
-			context.stroke();
-			context.moveTo(0, 0);
-			context.lineTo(250, 250);
-			context.stroke();
+		 	var xpos = new Array(250, 0, 250, 200, 150, 100, 250, 250, 250);
+			var ypos = new Array(0, 250, 250, 250 , 250, 250, 200, 150,100);
+			var xorigin = new Array(10, 20, 30, 0, 0, 0);
+			var yorigin = new Array(0,0,0, 10,20,30);
+		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+			{
+				context.beginPath();
+				if(linedrawn < 3)
+					context.moveTo(0,0); //always start at origin point
+				else
+					context.moveTo(xorigin[linedrawn - 3], yorigin[linedrawn-3]);
+				context.lineTo(xpos[linedrawn], ypos[linedrawn]);
+				context.stroke();
+				context.closePath();
+			}	
 			break;
 		 default:
 		}
