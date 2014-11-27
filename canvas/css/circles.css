@@ -1,0 +1,17 @@
+body {
+	margin: 0em;
+	margin-top: 3.5em;
+	padding: 0em;
+	background-color: #EEEEEE;
+}
+
+div {
+	width: 520px;
+	margin: auto;
+}	
+
+canvas {
+	display: inline-block;
+	margin: auto;
+	padding: 0em;
+}
