@@ -1,3 +1,10 @@
+/* Symmetry
+ * Defines four canvas elements, loops through them applying
+ * two functions, the first which will draw the lines ranging 
+ * from 3 to 8 lines randomly,i (drawBorder). The second function
+ * drawCirc() draws the circles in the foreground, their 
+ * position is random, but bounded to a specified region.
+ */
 for(var k = 0; k < 4; k++)
 {
 var canvas = document.getElementsByTagName('canvas')[k];
@@ -8,7 +15,7 @@ var canvas = document.getElementsByTagName('canvas')[k];
 	{
 	context.beginPath();
 	context.arc(xvar + 25, yvar + 25,radius, 0, 2* Math.PI, false);
-	context.fillStyle = 'white';
+	context.fillStyle = '#EEEEEE';
 	context.fill();
 	context.lineWidth = 1;
 	context.strokeStyle = '#222233';
@@ -17,13 +24,14 @@ var canvas = document.getElementsByTagName('canvas')[k];
 
 	function drawBorder(canv)
 	{
+		var numOfLines = Math.floor(Math.random() * 6.99) + 3;
 		switch(canv) {
 		 case 0:
 		 	var xpos = new Array(0, 250, 0, 50, 100, 150, 0, 0, 0);
 			var ypos = new Array(250, 0, 0, 0 , 0, 0, 50, 100, 150);
 			var xorigin = new Array(240, 230, 220, 250, 250, 250);
 			var yorigin = new Array(250,250,250, 240,230,220);
-		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+		 	for(var linedrawn = 0; linedrawn < numOfLines; linedrawn++)
 			{
 				context.beginPath();
 				if(linedrawn < 3)
@@ -40,7 +48,7 @@ var canvas = document.getElementsByTagName('canvas')[k];
 			var ypos = new Array(0, 0, 250, 0 , 0, 0, 50, 100, 150);
 			var xorigin = new Array(10, 20, 30, 0, 0, 0);
 			var yorigin = new Array(250,250,250, 240,230,220);
-		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+		 	for(var linedrawn = 0; linedrawn < numOfLines; linedrawn++)
 			{
 				context.beginPath();
 				if(linedrawn < 3)
@@ -57,7 +65,7 @@ var canvas = document.getElementsByTagName('canvas')[k];
 			var ypos = new Array(0, 250, 250, 250 ,250, 250, 200, 150, 100);
 			var xorigin = new Array(240, 230, 220, 250,250,250);
 			var yorigin = new Array(0,0,0, 10,20,30);
-		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+		 	for(var linedrawn = 0; linedrawn < numOfLines; linedrawn++)
 			{
 				context.beginPath();
 				if(linedrawn < 3)
@@ -74,7 +82,7 @@ var canvas = document.getElementsByTagName('canvas')[k];
 			var ypos = new Array(0, 250, 250, 250 , 250, 250, 200, 150,100);
 			var xorigin = new Array(10, 20, 30, 0, 0, 0);
 			var yorigin = new Array(0,0,0, 10,20,30);
-		 	for(var linedrawn = 0; linedrawn < Math.floor(Math.random() * 6.99)  + 3; linedrawn++)
+		 	for(var linedrawn = 0; linedrawn < numOfLines; linedrawn++)
 			{
 				context.beginPath();
 				if(linedrawn < 3)
@@ -109,7 +117,6 @@ var canvas = document.getElementsByTagName('canvas')[k];
 		{
 			continue;
 		}
-		
 		for(var j = 14; j > 0; j = j - 3)
 		{
 			drawCirc(xvar, yvar, j);	
