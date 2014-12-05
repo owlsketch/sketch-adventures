@@ -4,32 +4,187 @@
 	<meta charset="utf-8">
 	<title>Title</title>
 	<style>
-		body { margin: 0;}
-		canvas { width: 100%; height: 100%;}
+		html, body {
+		width: 100%;
+		height: 100%;
+		}
+		body { 
+		background-color: #ffffff;
+		overflow: hidden;
+		font-family: verdana, arial, sans;
+		margin: 0;
+		}
+		#blocker {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+
+			background-color: rgba(0,0,0,.3);
+		}
+		#instructions {
+			width: 100%;
+			height: 100%;
+
+			display: -webkit-box;
+			display: -moz-box;
+			display: box;
+
+			-webkit-box-orient: horizontal;
+			-moz-box-orient: horizontal; 
+			box-orient: horizontal;
+
+			-webkit-box-pack: center;
+			-moz-box-pack: center;
+			box-pack: center;
+
+			color: #ffffff;
+			text-align: center;
+
+			cursor: pointer;
+		}
+
+		canvas { width: 100%; height: 100%;
+		background-color: #ffffff;}
 	</style>
 
 	<script src="js/three.min.js"></script>
+	<script src="js/PointerLockControls.js"></script>
 </head>
 <body>
+	<div id="blocker">
+		<div id="instructions">
+			<span style="font-size: 3.3em">Click to Play </span>
+			<br>
+			W,A,S,D = Move around, SPACEBAR = Jump, Mouse = Look around
+		</div>
+	</div>
 	<script>
+	var controls;
+	var objects = [];
+	//blocker displays the controls, and tells user to click on the screen to play
+	var blocker = document.getElementById('blocker');
+	var instructions = document.getElementById('instructions');
+
+	//check to make sure we have pointerLock capability in users browser
+	var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+
+	if(havePointerLock) {
+		var element = document.body;
+		var pointerlockchange = function( event ) {
+			if(document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+				controls.enabled = true;
+				blocker.style.display = 'none';
+			} else {
+				controls.enabled = false;
+
+				blocker.style.display = '-webkit-box';
+				blocker.style.display = '-moz-box';
+				blocker.style.display = 'box';
+
+				instructions.style.display = '';
+			}		
+		}
+		var pointerlockerror = function(event) { //event refers to any actions done by keyboard or mouse.
+			instructions.style.display = '';
+		}
+		
+		//adding listeners for the pointer lock change and for pointer lock error
+		document.addEventListener('pointerlockchange', pointerlockchange, false);
+		document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+		document.addEventListener('webkitpointerlockchange',pointerlockchange, false);
+
+		document.addEventListener('pointerlockerror',pointerlockerror, false);
+		document.addEventListener('mozpointerlockerror',pointerlockerror, false);
+		document.addEventListener('webkitpointerlockerror',pointerlockerror, false);
+
+		instructions.addEventListener('click',function(event) {
+			instructions.style.display = 'none';
+			blocker.style.display = 'none';
+			
+			//asking browser to lock browser
+			element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+			if ( /Firefox/i.test( navigator.userAgent ) ) {
+
+				var fullscreenchange = function ( event ) {
+
+					if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
+
+						document.removeEventListener( 'fullscreenchange', fullscreenchange );
+						document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+
+						element.requestPointerLock();
+					}			
+
+				}
+
+				document.addEventListener( 'fullscreenchange', fullscreenchange, false );
+				document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+
+				element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+
+				element.requestFullscreen();
+
+			} else {
+
+				element.requestPointerLock();
+
+			}
+
+		}, false );
+
+		} else {instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API'; }
 	//This is an example for setting up controls for mouse, WASD and spacebar 
 	//in order to allow movement
 	var MAINSCENE = {};
 		MAINSCENE.scene = new THREE.Scene();
 		MAINSCENE.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+		
+		
+		controls = new THREE.PointerLockControls(MAINSCENE.camera)
+		MAINSCENE.scene.add(controls.getObject());	
+		
+		MAINSCENE.raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0 ,10);
+
 		MAINSCENE.renderer = new THREE.WebGLRenderer();
 		MAINSCENE.renderer.setSize(window.innerWidth, window.innerHeight);
+		MAINSCENE.renderer.setClearColor(0xffffff, 1);
 		document.body.appendChild(MAINSCENE.renderer.domElement);
 
+		window.addEventListener('resize', onWindowResize, false);
+
+		function onWindowResize() {
+			MAINSCENE.camera.aspect = window.innerWidth/window.innerHeight;
+			MAINSCENE.updateProjectionMatrix();
+
+			MAINSCENE.renderer.setSize(window.innerWidth, window.innerHeight);
+		}
+
 		MAINSCENE.geometry = new THREE.BoxGeometry(1,1,1);
-		MAINSCENE.material = new THREE.MeshBasicMaterial( { color: 0x00ff00 });
+		MAINSCENE.material = new THREE.MeshBasicMaterial( { color: 0x00aaaa });
 		MAINSCENE.cube = new THREE.Mesh( MAINSCENE.geometry, MAINSCENE.material);
 		MAINSCENE.scene.add( MAINSCENE.cube );
+		objects.push(MAINSCENE.cube);
 
 		MAINSCENE.camera.position.z = 5;
-		
+	
+
+
 		MAINSCENE.render = function () {
 		requestAnimationFrame( MAINSCENE.render ); //points to the function itself
+		controls.isOnObject(false);
+
+		MAINSCENE.raycaster.ray.origin.copy( controls.getObject().position );
+		MAINSCENE.raycaster.ray.origin.y -= 10;
+
+		var intersections = MAINSCENE.raycaster.intersectObject(objects);
+
+		if (intersections.length > 0 ) {
+			controls.isOnObject(true);
+		}
+
+		controls.update();
+
 		MAINSCENE.cube.rotation.x += 0.1;
 		MAINSCENE.cube.rotation.y += 0.1;
 
