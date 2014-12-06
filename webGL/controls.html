@@ -60,7 +60,6 @@
 	</div>
 	<script>
 	var controls;
-	var objects = [];
 	//blocker displays the controls, and tells user to click on the screen to play
 	var blocker = document.getElementById('blocker');
 	var instructions = document.getElementById('instructions');
@@ -97,6 +96,7 @@
 		document.addEventListener('mozpointerlockerror',pointerlockerror, false);
 		document.addEventListener('webkitpointerlockerror',pointerlockerror, false);
 
+		//clicking on the screen should result in controls getting activated and blocker becoming hidden
 		instructions.addEventListener('click',function(event) {
 			instructions.style.display = 'none';
 			blocker.style.display = 'none';
@@ -117,7 +117,7 @@
 					}			
 
 				}
-
+				//disables automatic transition to full screen, a default of disabling browser(???)
 				document.addEventListener( 'fullscreenchange', fullscreenchange, false );
 				document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
 
@@ -134,12 +134,15 @@
 		}, false );
 
 		} else {instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API'; }
+	
 	//This is an example for setting up controls for mouse, WASD and spacebar 
 	//in order to allow movement
 	var MAINSCENE = {};
+
 		MAINSCENE.scene = new THREE.Scene();
 		MAINSCENE.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 		
+		MAINSCENE.objects = [];
 		
 		controls = new THREE.PointerLockControls(MAINSCENE.camera)
 		MAINSCENE.scene.add(controls.getObject());	
@@ -155,7 +158,7 @@
 
 		function onWindowResize() {
 			MAINSCENE.camera.aspect = window.innerWidth/window.innerHeight;
-			MAINSCENE.updateProjectionMatrix();
+			MAINSCENE.camera.updateProjectionMatrix();
 
 			MAINSCENE.renderer.setSize(window.innerWidth, window.innerHeight);
 		}
@@ -163,10 +166,11 @@
 		MAINSCENE.geometry = new THREE.BoxGeometry(1,1,1);
 		MAINSCENE.material = new THREE.MeshBasicMaterial( { color: 0x00aaaa });
 		MAINSCENE.cube = new THREE.Mesh( MAINSCENE.geometry, MAINSCENE.material);
+		MAINSCENE.cube.position.y = 10;
+		MAINSCENE.cube.position.z = -2;
 		MAINSCENE.scene.add( MAINSCENE.cube );
-		objects.push(MAINSCENE.cube);
+		MAINSCENE.objects.push(MAINSCENE.cube);
 
-		MAINSCENE.camera.position.z = 5;
 	
 
 
@@ -177,7 +181,7 @@
 		MAINSCENE.raycaster.ray.origin.copy( controls.getObject().position );
 		MAINSCENE.raycaster.ray.origin.y -= 10;
 
-		var intersections = MAINSCENE.raycaster.intersectObject(objects);
+		var intersections = MAINSCENE.raycaster.intersectObject(MAINSCENE.objects);
 
 		if (intersections.length > 0 ) {
 			controls.isOnObject(true);
